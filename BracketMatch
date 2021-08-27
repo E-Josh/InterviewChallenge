@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+
+public class Program {
+     public static void Main(string[] args){
+        Console.WriteLine("Assert \"{}\": " + BracketMatch.IsValid("{}"));  // TRUE
+        Console.WriteLine("Assert \"}{\": " + BracketMatch.IsValid("}{")); // FALSE
+        Console.WriteLine("Assert \"\": " + BracketMatch.IsValid(""));  // TRUE
+        Console.WriteLine("Assert \"{{}\": " + BracketMatch.IsValid("{{}")); // FALSE
+        Console.WriteLine("Assert \"{abc...xyz}\": " + BracketMatch.IsValid("{abc...xyz}"));  // TRUE
+
+        // My own personal tests
+        Console.WriteLine("Assert \"12345 {} 67890\": " + BracketMatch.IsValid("12345 {} 67890")); // TRUE
+        Console.WriteLine("Assert \"{}{}{}\": " + BracketMatch.IsValid("{}{}{}")); // TRUE
+        Console.WriteLine("Assert \"}}}}}}\": " + BracketMatch.IsValid("}}}}}}")); // FALSE
+        Console.WriteLine("Assert \"{{{{{{\": " + BracketMatch.IsValid("{{{{{{")); // FALSE
+        Console.WriteLine("Assert \"{{{{{{abc}}}}}}xyz}\": " + BracketMatch.IsValid("{{{{{{abc}}}}}}xyz}")); // FALSE
+    }   
+}
+
+/// <summary>
+/// A class for testing out Various Bracket Matching Implementations
+/// </summary>
+public static class BracketMatch
+{
+    /// <summary>
+    /// Validates an input string contains matching open and close brackets, when present.
+    /// </summary>
+    /// <param name="bracketInput">An string which may or may not contain brackets</param>
+    public static bool IsValid(string bracketInput)
+    {
+        Stack<char> openBracketStack = new Stack<char>();
+        
+        // Loop through the characters in the input
+        for(int charIndex = 0; charIndex < bracketInput.Length; charIndex++)
+        {
+            // We only care about matching an open with a close bracket, ignore any other character
+            switch (bracketInput[charIndex])
+            {
+                case '{':
+                    openBracketStack.Push('{');
+                    break;
+                case '}':
+                    // We need a match to close.
+                    if(openBracketStack.Count > 0)
+                    {
+                        openBracketStack.Pop();    
+                    }
+                    // If there are none left or to begin with, we don't have a match. Stop the process.
+                    else
+                    {
+                        return false;
+                    }
+                    break;
+            }
+        }
+        return openBracketStack.Count == 0;
+    }
+}
